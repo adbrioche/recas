@@ -4,7 +4,7 @@
 
 #include "file_descriptor.hpp"
 
-namespace redis {
+namespace recas {
 
 class Client {
 public:

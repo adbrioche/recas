@@ -65,7 +65,7 @@ int main(int argc, char* argv[]) {
                 << "Initializing...\n";
     }
     
-    redis::Server server(ip, port, verbose);
+    recas::Server server(ip, port, verbose);
     server.run();
   } catch (const std::exception& e) {
     std::cerr << "[ERROR] " << e.what() << '\n';

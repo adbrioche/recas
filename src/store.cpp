@@ -5,7 +5,7 @@
 #include "codec.hpp"
 #include "store.hpp"
 
-namespace redis {
+namespace recas {
 
 std::optional<Value> Store::get(const std::string& key) const {
   if (auto it = data_.find(key); it != data_.end())

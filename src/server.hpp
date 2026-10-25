@@ -10,7 +10,7 @@
 #include "file_descriptor.hpp"
 #include "store.hpp"
 
-namespace redis {
+namespace recas {
 
 class Server {
 public:

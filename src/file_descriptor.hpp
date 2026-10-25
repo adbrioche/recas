@@ -1,6 +1,6 @@
 #pragma once
 
-namespace redis {
+namespace recas {
 
 class FileDescriptor {
 public:

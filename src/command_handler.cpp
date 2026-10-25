@@ -4,7 +4,7 @@
 #include <cctype>
 #include <string>
 
-namespace redis {
+namespace recas {
 
 // Helper Functions
 namespace {

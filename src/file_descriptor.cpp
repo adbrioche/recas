@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <utility>
 
-namespace redis {
+namespace recas {
 
 FileDescriptor::FileDescriptor(int fd) noexcept
   : fd_(fd) {}

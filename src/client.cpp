@@ -2,7 +2,7 @@
 
 #include <utility>
 
-namespace redis {
+namespace recas {
 
 Client::Client(FileDescriptor fd)
   : fd_(std::move(fd)) {}

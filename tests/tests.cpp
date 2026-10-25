@@ -15,14 +15,14 @@ void require(bool condition, const std::string& message) {
     throw std::runtime_error(message);
 }
 
-redis::Value decode_one(std::string& input, const std::string& description) {
-  auto value = redis::decode(input);
+recas::Value decode_one(std::string& input, const std::string& description) {
+  auto value = recas::decode(input);
   require(value.has_value(), description + ": expected a complete RESP value");
   return std::move(*value);
 }
 
 void test_codec() {
-  using namespace redis;
+  using namespace recas;
 
   const Value values[] = {
     SimpleString("OK"),
@@ -89,7 +89,7 @@ void test_codec() {
 }
 
 void test_commands() {
-  using namespace redis;
+  using namespace recas;
   Store store;
 
   auto result = handle_command(store, Array{BulkString("PING")});
@@ -148,7 +148,7 @@ void test_commands() {
 int main(int argc, char* argv[]) {
   try {
     if (argc != 2) {
-      std::cerr << "Usage: redis-tests <codec|commands>\n";
+      std::cerr << "Usage: recas-tests <codec|commands>\n";
       return EXIT_FAILURE;
     }
 

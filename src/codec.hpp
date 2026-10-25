@@ -6,7 +6,7 @@
 #include <variant>
 #include <vector>
 
-namespace redis {
+namespace recas {
 
 struct SimpleString : std::string {
   using std::string::string;

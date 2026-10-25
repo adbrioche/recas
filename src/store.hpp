@@ -6,7 +6,7 @@
 
 #include "codec.hpp"
 
-namespace redis {
+namespace recas {
 
 class Store {
 public:

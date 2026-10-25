@@ -14,7 +14,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-namespace redis {
+namespace recas {
 
 namespace {
   class ShutdownException : public std::exception {

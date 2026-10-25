@@ -12,7 +12,7 @@
 
 #include <iostream>
 
-namespace redis {
+namespace recas {
 
 namespace {
 
