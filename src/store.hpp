@@ -4,13 +4,18 @@
 #include <string>
 #include <unordered_map>
 
+#include "codec.hpp"
+
+namespace redis {
+
 class Store {
 public:
-    std::optional<std::string> get(const std::string& key) const;
-    void set(const std::string& key, const std::string& value);
-    bool contains(const std::string& key) const;
-    bool erase(const std::string& key);
+    std::optional<Value> get(const std::string& key) const;
+    void set(const std::string& key, const Value& value);
+    bool del(const std::string& key);
 
 private:
-    std::unordered_map<std::string, std::string> data_;
+    std::unordered_map<std::string, Value> data_;
 };
+
+}

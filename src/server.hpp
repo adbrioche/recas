@@ -1,21 +1,43 @@
 #pragma once
 
-#include <netinet/in.h>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
-#include "resp.hpp"
+#include <sys/epoll.h>
+
+#include "client.hpp"
+#include "file_descriptor.hpp"
+#include "store.hpp"
 
 namespace redis {
 
 class Server {
 public:
-    bool start();
-    bool run();
+  Server(const std::string& ip, int port, bool verbose);
+  void run();
+  void shutdown();
 
 private:
-    int sfd_, cfd_;
-    sockaddr_in saddr_;
-    char buffer_[1024];
-    Parser parser_;
+  std::string ip_;
+  int port_;
+  bool verbose_;
+
+  FileDescriptor lfd_;
+  FileDescriptor epfd_;
+  std::unordered_map<int, Client> clients_;
+  Store store_;
+
+  FileDescriptor create_listen();
+  FileDescriptor create_epoll();
+  void add_to_epoll(int fd);
+
+  void accept_clients();
+  void handle_client(const epoll_event& event);
+
+  void update_client(int fd, bool want_write);
+  void close_client(int fd) noexcept;
+  void log_info(const std::string& message) const;
 };
 
 }

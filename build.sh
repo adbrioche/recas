@@ -1,3 +1,5 @@
-cmake -S . -B build &&
-cmake --build build &&
-./build/redis-server
+set -eu
+
+cmake -S . -B build
+cmake --build build
+exec ./build/recas-server "$@"

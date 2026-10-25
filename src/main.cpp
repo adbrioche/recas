@@ -1,96 +1,76 @@
 #include <iostream>
+#include <string>
 
 #include "server.hpp"
 
+int main(int argc, char* argv[]) {
+  // Default Launch Options
+  std::string ip = "127.0.0.1";
+  int port = 6379;
+  bool verbose = false;
+  
+  // Arguments
+  for (int i = 1; i < argc; ++i) {
+    const std::string arg = argv[i];
 
-int main() {
-    Server server;
+    // Verbose
+    if (arg == "--verbose" || arg == "-v")
+      verbose = true;
+
+    // IP configuration
+    else if (arg == "--ip" || arg == "-ip") {
+      if (++i >= argc) {
+        std::cerr << "[ERROR] " << arg << " requires an IPv4 address.\n";
+        return 1;
+      }
+
+      ip = argv[i];
+    }
+      
+    // Port configuration
+    else if (arg == "--port" || arg == "-p") {
+      try {
+        if (++i >= argc)
+          throw std::invalid_argument("Invalid or missing port.");
+
+        std::size_t charsRead = 0;
+        const std::string text = argv[i];
+        const int number = std::stoi(text, &charsRead);
+
+        if (charsRead != text.size())
+            throw std::invalid_argument("Invalid or missing port.");
+
+        if (number < 1 || number > 65535)
+            throw std::out_of_range("Port out of range (expected 1-65535).");
     
-    server.start();
+        port = number;
+      } catch (const std::exception& e) {
+        std::cerr << "[ERROR] " << e.what() << '\n';
+        return 1;
+      }
+    } 
+    
+    // Unknown argument
+    else {
+      std::cerr << "[ERROR] Unknown argument: \"" << arg << "\".\n";
+      return 1;
+    }
+  }
+
+  // Run server, print errors if they occur
+  try {
+    if (verbose) {
+      std::cout << "Remote Dictionary Server\n"
+                << "Listening address: " << ip << ":" << port << "\n"
+                << "Initializing...\n";
+    }
+    
+    redis::Server server(ip, port, verbose);
     server.run();
+  } catch (const std::exception& e) {
+    std::cerr << "[ERROR] " << e.what() << '\n';
+    return 1;
+  }
 
-    std::cout << "Shutdown complete.\n";
-
-    return 0;
+  return 0;
 }
-
-
-
-
-
-/*
-This is server-side. When we start up our program, we want one acceptor thread which assigns a service thread to each client connection.
-Each service thread should contain it's own read, write, and parsing logic.
-
-
-*/
-
-
-
-
-
-
-
-
-
-// int main() {
-//     int sfd = socket(AF_INET, SOCK_STREAM, 0);
-
-//     sockaddr_in saddr{};
-//     saddr.sin_family = AF_INET;
-//     saddr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-//     saddr.sin_port = htons(6379);
-
-//     if (bind(sfd, reinterpret_cast<sockaddr*>(&saddr), sizeof(saddr)) == -1) {
-//         std::cerr << "bind() failed: " << strerror(errno) << '\n';
-//         close(sfd);
-//         return 1;
-//     }
-
-//     if (listen(sfd, 32) == -1) {
-//         std::cerr << "listen() failed\n";
-//         close(sfd);
-//         return 1;
-//     }
-
-//     std::cout << "Listening on 127.0.0.1:6379...\n";
-
-//     int cfd = accept(sfd, nullptr, nullptr);
-
-//     if (cfd == -1) {
-//         std::cerr << "accept() failed\n";
-//         close(sfd);
-//         return 1;
-//     }
-
-//     std::cout << "Client connected!\n";
-
-//     char buf[1024];
-
-//     ssize_t n = read(cfd, buf, sizeof(buf));
-
-//     if (n == -1) {
-//         std::cerr << "read() failed\n";
-//         close(cfd);
-//         close(sfd);
-//         return 1;
-//     }
-
-//     if (n == 14 && std::string_view(buf, n) == "*1\r\n$4\r\nPING\r\n") {
-//         const char response[] = "+PONG\r\n";
-
-//         if (write(cfd, response, sizeof(response) - 1) == -1) {
-//             std::cerr << "write() failed\n";
-//             close(cfd);
-//             close(sfd);
-//             return 1;
-//         }
-//     } else {
-//         std::cout.write(buf, n) << '\n';
-
-//         close(cfd);
-//         close(sfd);
-
-//         return 0;
-//     }
-// }
